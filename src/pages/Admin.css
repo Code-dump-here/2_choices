@@ -1,0 +1,321 @@
+.admin-container {
+  max-width: 1000px;
+}
+
+.admin-panel {
+  background: white;
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.admin-header {
+  margin-bottom: 30px;
+}
+
+.admin-header h1 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 15px;
+  font-size: 2.5em;
+}
+
+.room-code-large {
+  text-align: center;
+  font-size: 1.5em;
+  color: #333;
+  margin-top: 15px;
+  padding: 15px;
+  background: #f5f5f5;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.room-code-large span {
+  color: #667eea;
+  font-weight: bold;
+  font-size: 1.3em;
+  letter-spacing: 2px;
+}
+
+.copy-btn {
+  background: #667eea;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.8em;
+  transition: background 0.3s ease;
+}
+
+.copy-btn:hover {
+  background: #5568d3;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+.stat-card {
+  color: white;
+  padding: 30px;
+  border-radius: 15px;
+  text-align: center;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.stat-card.total-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.stat-card.cooperate-card {
+  background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+}
+
+.stat-card.defect-card {
+  background: linear-gradient(135deg, #f44336 0%, #da190b 100%);
+}
+
+.stat-card.pending-card {
+  background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+}
+
+.stat-icon {
+  font-size: 2.5em;
+  margin-bottom: 10px;
+}
+
+.stat-card h2 {
+  font-size: 1.2em;
+  margin-bottom: 15px;
+  opacity: 0.9;
+}
+
+.stat-number {
+  font-size: 3em;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.stat-percent {
+  font-size: 1.2em;
+  opacity: 0.8;
+}
+
+.participants-section {
+  margin-bottom: 30px;
+}
+
+.participants-section h3 {
+  color: #333;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.live-indicator {
+  font-size: 0.8em;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.participants-list {
+  background: #f5f5f5;
+  border-radius: 10px;
+  padding: 20px;
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.participant-card {
+  background: white;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  border-left: 4px solid #ddd;
+}
+
+.participant-card.cooperate {
+  border-left-color: #4CAF50;
+}
+
+.participant-card.defect {
+  border-left-color: #f44336;
+}
+
+.participant-card.no-choice {
+  border-left-color: #ff9800;
+}
+
+.participant-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.participant-number {
+  background: #667eea;
+  color: white;
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+.participant-details {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.participant-name {
+  font-weight: bold;
+  font-size: 1.1em;
+  color: #333;
+}
+
+.participant-time {
+  color: #999;
+  font-size: 0.85em;
+}
+
+.participant-choice {
+  flex-shrink: 0;
+}
+
+.choice-badge {
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-weight: bold;
+  font-size: 0.9em;
+  white-space: nowrap;
+}
+
+.choice-badge.cooperate {
+  background: #4CAF50;
+  color: white;
+}
+
+.choice-badge.defect {
+  background: #f44336;
+  color: white;
+}
+
+.choice-badge.pending {
+  background: #ff9800;
+  color: white;
+}
+
+.no-data {
+  text-align: center;
+  color: #999;
+  padding: 20px;
+}
+
+.admin-actions {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.close-room-btn,
+.new-room-btn {
+  padding: 12px 30px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1em;
+  transition: all 0.3s ease;
+  font-weight: bold;
+}
+
+.close-room-btn {
+  background: #f44336;
+  color: white;
+}
+
+.close-room-btn:hover {
+  background: #da190b;
+}
+
+.new-room-btn {
+  background: #4CAF50;
+  color: white;
+}
+
+.new-room-btn:hover {
+  background: #45a049;
+}
+
+.footer {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.back-link {
+  background: none;
+  border: none;
+  color: white;
+  text-decoration: none;
+  font-size: 0.9em;
+  cursor: pointer;
+  opacity: 0.8;
+  transition: opacity 0.3s ease;
+  padding: 10px;
+}
+
+.back-link:hover {
+  opacity: 1;
+}
+
+@media (max-width: 600px) {
+  .admin-panel {
+    padding: 20px;
+  }
+
+  .admin-header h1 {
+    font-size: 1.8em;
+  }
+
+  .admin-actions {
+    flex-direction: column;
+  }
+
+  .participant-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .room-code-large {
+    flex-direction: column;
+    font-size: 1.2em;
+  }
+}

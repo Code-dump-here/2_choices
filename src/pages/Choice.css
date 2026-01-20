@@ -1,0 +1,186 @@
+.container {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.experiment-box {
+  background: white;
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.room-header {
+  background: #f5f5f5;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+.room-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.room-code-display,
+.participant-name {
+  color: #666;
+}
+
+.room-code-display strong,
+.participant-name strong {
+  color: #667eea;
+  font-size: 1.1em;
+}
+
+h1 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 20px;
+  font-size: 2.5em;
+}
+
+.description {
+  text-align: center;
+  color: #666;
+  margin-bottom: 40px;
+  font-size: 1.1em;
+  line-height: 1.6;
+}
+
+.choices {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  margin-bottom: 30px;
+}
+
+.choice-btn {
+  background: white;
+  border: 3px solid #ddd;
+  border-radius: 15px;
+  padding: 30px 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.choice-btn:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.choice-btn.cooperate {
+  border-color: #4CAF50;
+}
+
+.choice-btn.cooperate:hover {
+  background: #4CAF50;
+  color: white;
+}
+
+.choice-btn.defect {
+  border-color: #f44336;
+}
+
+.choice-btn.defect:hover {
+  background: #f44336;
+  color: white;
+}
+
+.btn-icon {
+  font-size: 3em;
+  margin-bottom: 10px;
+}
+
+.choice-btn h2 {
+  margin-bottom: 10px;
+  font-size: 1.5em;
+}
+
+.choice-btn p {
+  color: #666;
+  font-size: 0.95em;
+}
+
+.choice-btn:hover p {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.result {
+  text-align: center;
+  padding: 30px;
+  background: #f5f5f5;
+  border-radius: 15px;
+  margin-top: 20px;
+}
+
+.result-message {
+  font-size: 1.5em;
+  color: #4CAF50;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.result-detail {
+  margin-bottom: 20px;
+}
+
+.reset-btn {
+  background: #667eea;
+  color: white;
+  border: none;
+  padding: 12px 30px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1em;
+  transition: background 0.3s ease;
+}
+
+.reset-btn:hover {
+  background: #5568d3;
+}
+
+.footer {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.leave-link {
+  background: none;
+  border: none;
+  color: #667eea;
+  text-decoration: none;
+  font-size: 0.9em;
+  cursor: pointer;
+  opacity: 0.8;
+  transition: opacity 0.3s ease;
+  padding: 10px;
+}
+
+.leave-link:hover {
+  opacity: 1;
+}
+
+@media (max-width: 600px) {
+  .choices {
+    grid-template-columns: 1fr;
+  }
+
+  .experiment-box {
+    padding: 20px;
+  }
+
+  h1 {
+    font-size: 1.8em;
+  }
+
+  .room-info {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

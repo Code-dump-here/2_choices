@@ -27,6 +27,7 @@ CREATE TABLE participants (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   room_id UUID REFERENCES rooms(id) ON DELETE CASCADE,
   name VARCHAR(100) NOT NULL,
+  session_id VARCHAR(100) NOT NULL,
   choice VARCHAR(20),
   choice_timestamp TIMESTAMP WITH TIME ZONE,
   joined_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()

@@ -28,23 +28,49 @@ function Home() {
   // Create a new room
   const createRoom = async () => {
     try {
-      const roomCode = generateRoomCode();
-
-      const { data, error } = await supabase
-        .from('rooms')
-        .insert([{ room_code: roomCode, is_active: true }])
-        .select()
-        .single();
-
-      if (error) throw error;
+      let roomCode;
+      let attempts = 0;
+      let data;
+      
+      // Try up to 5 times to generate a unique room code
+      while (attempts < 5) {
+        roomCode = generateRoomCode();
+        
+        // Check if room code already exists
+        const { data: existing } = await supabase
+          .from('rooms')
+          .select('room_code')
+          .eq('room_code', roomCode)
+          .single();
+        
+        if (!existing) {
+          // Code is unique, create the room
+          const { data: newRoom, error } = await supabase
+            .from('rooms')
+            .insert([{ room_code: roomCode, is_active: true }])
+            .select()
+            .single();
+          
+          if (error) throw error;
+          data = newRoom;
+          break;
+        }
+        
+        attempts++;
+      }
+      
+      if (!data) {
+        throw new Error('Could not generate unique room code');
+      }
 
       // Store room info and redirect to admin page
       localStorage.setItem('adminRoomId', data.id);
       localStorage.setItem('adminRoomCode', data.room_code);
+      localStorage.setItem('isRoomCreator', 'true'); // Mark as room creator
       navigate(`/admin?room=${data.room_code}`);
     } catch (error) {
       console.error('Error creating room:', error);
-      showError('Failed to create room. Please check your Supabase configuration.');
+      showError('Không thể tạo phòng. Vui lòng kiểm tra cấu hình Supabase.');
     }
   };
 
@@ -55,12 +81,12 @@ function Home() {
     const code = joinCode.trim().toUpperCase();
 
     if (!name) {
-      showError('Please enter your name');
+      showError('Vui lòng nhập tên của bạn');
       return;
     }
 
     if (!code || code.length !== 6) {
-      showError('Please enter a valid 6-character room code');
+      showError('Vui lòng nhập mã phòng hợp lệ gồm 6 ký tự');
       return;
     }
 
@@ -74,7 +100,21 @@ function Home() {
         .single();
 
       if (roomError || !room) {
-        showError('Room not found or is no longer active');
+        showError('Không tìm thấy phòng hoặc phòng không còn hoạt động');
+        return;
+      }
+
+      // Check if this session already joined the room
+      const sessionId = localStorage.getItem('sessionId');
+      const { data: existingParticipant } = await supabase
+        .from('participants')
+        .select('*')
+        .eq('room_id', room.id)
+        .eq('session_id', sessionId)
+        .single();
+
+      if (existingParticipant) {
+        showError('Bạn đã tham gia phòng này rồi. Không thể tham gia lại.');
         return;
       }
 
@@ -84,6 +124,7 @@ function Home() {
         .insert([{
           room_id: room.id,
           name: name,
+          session_id: sessionId,
           choice: null
         }])
         .select()
@@ -99,26 +140,26 @@ function Home() {
       navigate(`/choice?room=${code}`);
     } catch (error) {
       console.error('Error joining room:', error);
-      showError('Failed to join room. Please try again.');
+      showError('Không thể tham gia phòng. Vui lòng thử lại.');
     }
   };
 
   return (
     <div className="container">
       <div className="experiment-box">
-        <h1>🎮 The Choice Experiment</h1>
+        <h1>🎮 Thí Nghiệm Lựa Chọn</h1>
         <p className="description">
-          A social experiment inspired by the Prisoner's Dilemma. Join a room to participate!
+          Một thí nghiệm xã hội lấy cảm hứng từ Tình Huống Tù Nhân. Tham gia phòng để thử nghiệm!
         </p>
 
         {/* Join Room Section */}
         <div className="section join-section">
-          <h2>Join a Room</h2>
+          <h2>Tham Gia Phòng</h2>
           <form onSubmit={joinRoom}>
             <div className="form-group">
               <input
                 type="text"
-                placeholder="Enter your name"
+                placeholder="Nhập tên của bạn"
                 maxLength="50"
                 value={joinName}
                 onChange={(e) => setJoinName(e.target.value)}
@@ -127,26 +168,26 @@ function Home() {
             <div className="form-group">
               <input
                 type="text"
-                placeholder="Room Code (e.g., ABC123)"
+                placeholder="Mã Phòng (ví dụ: ABC123)"
                 maxLength="6"
                 style={{ textTransform: 'uppercase' }}
                 value={joinCode}
                 onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
               />
             </div>
-            <button type="submit" className="primary-btn">Join Room</button>
+            <button type="submit" className="primary-btn">Tham Gia Phòng</button>
           </form>
         </div>
 
         <div className="divider">
-          <span>OR</span>
+          <span>HOẶC</span>
         </div>
 
         {/* Create Room Section */}
         <div className="section create-section">
-          <h2>Create a Room (Admin)</h2>
-          <p className="section-description">Create a new session and get a room code to share with participants.</p>
-          <button className="primary-btn admin-btn" onClick={createRoom}>Create New Room</button>
+          <h2>Tạo Phòng (Quản Trị)</h2>
+          <p className="section-description">Tạo phiên mới và nhận mã phòng để chia sẻ với người tham gia.</p>
+          <button className="primary-btn admin-btn" onClick={createRoom}>Tạo Phòng Mới</button>
         </div>
 
         {/* Error Message */}

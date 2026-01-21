@@ -22,10 +22,16 @@ function Admin() {
     // Get room info from URL or localStorage
     const code = searchParams.get('room') || localStorage.getItem('adminRoomCode');
     const adminRoomId = localStorage.getItem('adminRoomId');
+    const isCreator = localStorage.getItem('isRoomCreator');
 
     if (!code) {
       navigate('/');
       return;
+    }
+
+    // Warn if accessing admin panel without being creator (but allow view-only access)
+    if (!isCreator && !adminRoomId) {
+      console.warn('Accessing admin panel without room creator credentials');
     }
 
     setRoomCode(code);
@@ -56,8 +62,10 @@ function Admin() {
         .eq('room_code', code)
         .single();
 
-      if (error) {
+      if (error || !data) {
         console.error('Error getting room:', error);
+        alert('Không tìm thấy phòng. Vui lòng kiểm tra mã phòng.');
+        navigate('/');
         return null;
       }
 
@@ -65,6 +73,8 @@ function Admin() {
       return data.id;
     } catch (error) {
       console.error('Error:', error);
+      alert('Lỗi khi tải thông tin phòng.');
+      navigate('/');
       return null;
     }
   };
@@ -121,7 +131,12 @@ function Admin() {
           loadParticipants(id);
         }
       )
-      .subscribe();
+      .subscribe((status) => {
+        if (status === 'SUBSCRIPTION_ERROR') {
+          console.error('Failed to subscribe to realtime updates');
+          alert('Cảnh báo: Cập nhật trực tiếp có thể không hoạt động. Hãy làm mới trang.');
+        }
+      });
 
     return () => {
       supabase.removeChannel(channel);
@@ -130,12 +145,12 @@ function Admin() {
 
   const copyRoomCode = () => {
     navigator.clipboard.writeText(roomCode).then(() => {
-      alert('Room code copied to clipboard!');
+      alert('Đã sao chép mã phòng!');
     });
   };
 
   const closeRoom = async () => {
-    if (!confirm('Are you sure you want to close this room? All participants will be removed.')) {
+    if (!confirm('Bạn có chắc chắn muốn đóng phòng này? Tất cả người tham gia sẽ bị xóa.')) {
       return;
     }
 
@@ -149,16 +164,18 @@ function Admin() {
 
       localStorage.removeItem('adminRoomId');
       localStorage.removeItem('adminRoomCode');
+      localStorage.removeItem('isRoomCreator');
       navigate('/');
     } catch (error) {
       console.error('Error closing room:', error);
-      alert('Failed to close room. Please try again.');
+      alert('Không thể đóng phòng. Vui lòng thử lại.');
     }
   };
 
   const createNewRoom = () => {
     localStorage.removeItem('adminRoomId');
     localStorage.removeItem('adminRoomCode');
+    localStorage.removeItem('isRoomCreator');
     navigate('/');
   };
 
@@ -166,46 +183,46 @@ function Admin() {
     <div className="container admin-container">
       <div className="admin-panel">
         <div className="admin-header">
-          <h1>📊 Admin Panel</h1>
+          <h1>📊 Bảng Quản Trị</h1>
           <div className="room-code-large">
-            Room Code: <span>{roomCode}</span>
-            <button className="copy-btn" onClick={copyRoomCode} title="Copy room code">📋</button>
+            Mã Phòng: <span>{roomCode}</span>
+            <button className="copy-btn" onClick={copyRoomCode} title="Sao chép mã phòng">📋</button>
           </div>
         </div>
 
         <div className="stats-grid">
           <div className="stat-card total-card">
             <div className="stat-icon">👥</div>
-            <h2>Participants</h2>
+            <h2>Người Tham Gia</h2>
             <div className="stat-number">{stats.total}</div>
           </div>
 
           <div className="stat-card cooperate-card">
             <div className="stat-icon">🤝</div>
-            <h2>Cooperate</h2>
+            <h2>Hợp Tác</h2>
             <div className="stat-number">{stats.cooperateCount}</div>
             <div className="stat-percent">{stats.cooperatePercent}%</div>
           </div>
 
           <div className="stat-card defect-card">
             <div className="stat-icon">🚫</div>
-            <h2>Defect</h2>
+            <h2>Phản Bội</h2>
             <div className="stat-number">{stats.defectCount}</div>
             <div className="stat-percent">{stats.defectPercent}%</div>
           </div>
 
           <div className="stat-card pending-card">
             <div className="stat-icon">⏳</div>
-            <h2>Pending</h2>
+            <h2>Chờ Đợi</h2>
             <div className="stat-number">{stats.pendingCount}</div>
           </div>
         </div>
 
         <div className="participants-section">
-          <h3>Participants in Room <span className="live-indicator">🔴 LIVE</span></h3>
+          <h3>Người Tham Gia Trong Phòng <span className="live-indicator">🔴 TRỰC TIẾP</span></h3>
           <div className="participants-list">
             {participants.length === 0 ? (
-              <p className="no-data">Waiting for participants to join...</p>
+              <p className="no-data">Đang chờ người tham gia...</p>
             ) : (
               participants.map((p, index) => {
                 const joinTime = new Date(p.joined_at).toLocaleTimeString();
@@ -217,14 +234,14 @@ function Admin() {
                       <div className="participant-number">#{index + 1}</div>
                       <div className="participant-details">
                         <div className="participant-name">{p.name}</div>
-                        <div className="participant-time">Joined: {joinTime}</div>
-                        {choiceTime && <div className="participant-time">Chose: {choiceTime}</div>}
+                        <div className="participant-time">Tham gia: {joinTime}</div>
+                        {choiceTime && <div className="participant-time">Chọn lúc: {choiceTime}</div>}
                       </div>
                     </div>
                     <div className="participant-choice">
-                      {p.choice === 'cooperate' && <span className="choice-badge cooperate">🤝 Cooperate</span>}
-                      {p.choice === 'defect' && <span className="choice-badge defect">🚫 Defect</span>}
-                      {!p.choice && <span className="choice-badge pending">⏳ Pending</span>}
+                      {p.choice === 'cooperate' && <span className="choice-badge cooperate">🤝 Hợp Tác</span>}
+                      {p.choice === 'defect' && <span className="choice-badge defect">🚫 Phản Bội</span>}
+                      {!p.choice && <span className="choice-badge pending">⏳ Chờ Đợi</span>}
                     </div>
                   </div>
                 );
@@ -234,13 +251,13 @@ function Admin() {
         </div>
 
         <div className="admin-actions">
-          <button className="close-room-btn" onClick={closeRoom}>🚫 Close Room</button>
-          <button className="new-room-btn" onClick={createNewRoom}>➕ Create New Room</button>
+          <button className="close-room-btn" onClick={closeRoom}>🚫 Đóng Phòng</button>
+          <button className="new-room-btn" onClick={createNewRoom}>➕ Tạo Phòng Mới</button>
         </div>
       </div>
 
       <div className="footer">
-        <button className="back-link" onClick={() => navigate('/')}>← Back to Home</button>
+        <button className="back-link" onClick={() => navigate('/')}>← Về Trang Chủ</button>
       </div>
     </div>
   );

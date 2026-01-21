@@ -66,33 +66,25 @@ function Choice() {
       setHasChoice(true);
     } catch (error) {
       console.error('Error saving choice:', error);
-      alert('Failed to save your choice. Please try again.');
+      alert('Không thể lưu lựa chọn của bạn. Vui lòng thử lại.');
     }
   };
 
-  const resetChoice = async () => {
+  const leaveRoom = async () => {
     const participantId = localStorage.getItem('participantId');
-
+    
     try {
-      const { error } = await supabase
-        .from('participants')
-        .update({
-          choice: null,
-          choice_timestamp: null
-        })
-        .eq('id', participantId);
-
-      if (error) throw error;
-
-      setHasChoice(false);
-      setCurrentChoice(null);
+      // Delete participant record from database
+      if (participantId) {
+        await supabase
+          .from('participants')
+          .delete()
+          .eq('id', participantId);
+      }
     } catch (error) {
-      console.error('Error resetting choice:', error);
-      alert('Failed to reset your choice. Please try again.');
+      console.error('Error removing participant:', error);
     }
-  };
-
-  const leaveRoom = () => {
+    
     localStorage.removeItem('participantId');
     localStorage.removeItem('participantName');
     localStorage.removeItem('roomCode');
@@ -105,45 +97,47 @@ function Choice() {
       <div className="experiment-box">
         <div className="room-header">
           <div className="room-info">
-            <span className="room-code-display">Room: <strong>{roomCode}</strong></span>
+            <span className="room-code-display">Phòng: <strong>{roomCode}</strong></span>
             <span className="participant-name">👤 <strong>{participantName}</strong></span>
           </div>
         </div>
 
-        <h1>Make Your Choice</h1>
+        <h1>Đưa Ra Lựa Chọn</h1>
         <p className="description">
-          You are part of a social experiment. Choose one of the two options below.
-          Your choice will be visible to the room admin.
+          Bạn đang tham gia một thí nghiệm xã hội. Chọn một trong hai lựa chọn bên dưới.
+          Lựa chọn của bạn sẽ hiển thị cho quản trị viên phòng.
         </p>
 
         {!hasChoice ? (
           <div className="choices">
             <button className="choice-btn cooperate" onClick={() => handleChoice('cooperate')}>
               <div className="btn-icon">🤝</div>
-              <h2>Cooperate</h2>
-              <p>Share with others</p>
+              <h2>Hợp Tác</h2>
+              <p>Chia sẻ với người khác</p>
             </button>
 
             <button className="choice-btn defect" onClick={() => handleChoice('defect')}>
               <div className="btn-icon">🚫</div>
-              <h2>Defect</h2>
-              <p>Keep for yourself</p>
+              <h2>Phản Bội</h2>
+              <p>Giữ cho bản thân</p>
             </button>
           </div>
         ) : (
           <div className="result">
-            <p className="result-message">Choice Recorded!</p>
+            <p className="result-message">Đã Ghi Nhận Lựa Chọn!</p>
             <p className="result-detail" style={{ color: currentChoice === 'cooperate' ? '#4CAF50' : '#f44336' }}>
               {currentChoice === 'cooperate'
-                ? 'You chose to COOPERATE. The admin can see your choice.'
-                : 'You chose to DEFECT. The admin can see your choice.'}
+                ? 'Bạn đã chọn HỢP TÁC. Quản trị viên có thể thấy lựa chọn của bạn.'
+                : 'Bạn đã chọn PHẢN BỘI. Quản trị viên có thể thấy lựa chọn của bạn.'}
             </p>
-            <button className="reset-btn" onClick={resetChoice}>Change Choice</button>
+            <p className="result-detail" style={{ fontSize: '0.9em', color: '#666', marginTop: '10px' }}>
+              Lựa chọn của bạn đã được ghi nhận và không thể thay đổi.
+            </p>
           </div>
         )}
 
         <div className="footer">
-          <button className="leave-link" onClick={leaveRoom}>← Leave Room</button>
+          <button className="leave-link" onClick={leaveRoom}>← Rời Phòng</button>
         </div>
       </div>
     </div>

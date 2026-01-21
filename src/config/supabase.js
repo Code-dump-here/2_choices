@@ -8,8 +8,8 @@
 // 
 // Or for quick testing, replace the values below directly:
 
-export const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || 'YOUR_SUPABASE_URL_HERE';
-export const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || 'YOUR_SUPABASE_ANON_KEY_HERE';
+export const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || 'https://uafqbnuegqkwysuqwzll.supabase.co';
+export const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVhZnFibnVlZ3Frd3lzdXF3emxsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg5MTAyNzMsImV4cCI6MjA4NDQ4NjI3M30.n_bdEkOUjLQaVnBwGjj1qZQgpIdqOeICeXrVGl1TplI';
 
 // DATABASE SCHEMA - Run this SQL in your Supabase SQL Editor:
 /*

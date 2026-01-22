@@ -1,11 +1,8 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
 import { supabase } from '../lib/supabaseClient';
 import './Admin.css';
 
-function Admin() {
-  const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+function Admin({ navigate }) {
   const [roomCode, setRoomCode] = useState('');
   const [roomId, setRoomId] = useState('');
   const [participants, setParticipants] = useState([]);
@@ -19,13 +16,13 @@ function Admin() {
   });
 
   useEffect(() => {
-    // Get room info from URL or localStorage
-    const code = searchParams.get('room') || localStorage.getItem('adminRoomCode');
+    // Get room info from localStorage
+    const code = localStorage.getItem('adminRoomCode');
     const adminRoomId = localStorage.getItem('adminRoomId');
     const isCreator = localStorage.getItem('isRoomCreator');
 
     if (!code) {
-      navigate('/');
+      navigate('home');
       return;
     }
 
@@ -41,7 +38,7 @@ function Admin() {
 
     // Initialize
     initializeRoom(code, adminRoomId);
-  }, [navigate, searchParams]);
+  }, [navigate]);
 
   const initializeRoom = async (code, adminRoomId) => {
     const id = await getRoomId(code, adminRoomId);
@@ -65,7 +62,7 @@ function Admin() {
       if (error || !data) {
         console.error('Error getting room:', error);
         alert('Không tìm thấy phòng. Vui lòng kiểm tra mã phòng.');
-        navigate('/');
+        navigate('home');
         return null;
       }
 
@@ -74,7 +71,7 @@ function Admin() {
     } catch (error) {
       console.error('Error:', error);
       alert('Lỗi khi tải thông tin phòng.');
-      navigate('/');
+      navigate('home');
       return null;
     }
   };
@@ -165,7 +162,7 @@ function Admin() {
       localStorage.removeItem('adminRoomId');
       localStorage.removeItem('adminRoomCode');
       localStorage.removeItem('isRoomCreator');
-      navigate('/');
+      navigate('home');
     } catch (error) {
       console.error('Error closing room:', error);
       alert('Không thể đóng phòng. Vui lòng thử lại.');
@@ -176,7 +173,7 @@ function Admin() {
     localStorage.removeItem('adminRoomId');
     localStorage.removeItem('adminRoomCode');
     localStorage.removeItem('isRoomCreator');
-    navigate('/');
+    navigate('home');
   };
 
   return (
@@ -257,7 +254,7 @@ function Admin() {
       </div>
 
       <div className="footer">
-        <button className="back-link" onClick={() => navigate('/')}>← Về Trang Chủ</button>
+        <button className="back-link" onClick={() => navigate('home')}>← Về Trang Chủ</button>
       </div>
     </div>
   );

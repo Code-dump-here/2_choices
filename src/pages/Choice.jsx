@@ -1,11 +1,8 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
 import { supabase } from '../lib/supabaseClient';
 import './Choice.css';
 
-function Choice() {
-  const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+function Choice({ navigate }) {
   const [hasChoice, setHasChoice] = useState(false);
   const [currentChoice, setCurrentChoice] = useState(null);
   const [participantName, setParticipantName] = useState('');
@@ -18,7 +15,7 @@ function Choice() {
     const code = localStorage.getItem('roomCode');
 
     if (!participantId || !code) {
-      navigate('/');
+      navigate('home');
       return;
     }
 
@@ -89,7 +86,7 @@ function Choice() {
     localStorage.removeItem('participantName');
     localStorage.removeItem('roomCode');
     localStorage.removeItem('roomId');
-    navigate('/');
+    navigate('home');
   };
 
   return (

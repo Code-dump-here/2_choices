@@ -1,8 +1,10 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabaseClient';
 import './Home.css';
 
-function Home({ navigate }) {
+function Home() {
+  const navigate = useNavigate();
   const [joinName, setJoinName] = useState('');
   const [joinCode, setJoinCode] = useState('');
   const [error, setError] = useState('');
@@ -65,7 +67,7 @@ function Home({ navigate }) {
       localStorage.setItem('adminRoomId', data.id);
       localStorage.setItem('adminRoomCode', data.room_code);
       localStorage.setItem('isRoomCreator', 'true'); // Mark as room creator
-      navigate('admin', { room: data.room_code });
+      navigate(`/admin?room=${data.room_code}`);
     } catch (error) {
       console.error('Error creating room:', error);
       showError('Không thể tạo phòng. Vui lòng kiểm tra cấu hình Supabase.');
@@ -135,7 +137,7 @@ function Home({ navigate }) {
       localStorage.setItem('participantName', name);
       localStorage.setItem('roomCode', code);
       localStorage.setItem('roomId', room.id);
-      navigate('choice', { room: code });
+      navigate(`/choice?room=${code}`);
     } catch (error) {
       console.error('Error joining room:', error);
       showError('Không thể tham gia phòng. Vui lòng thử lại.');
